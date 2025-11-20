@@ -1,5 +1,10 @@
 # Matlab-Python Wrapper for Dynamixel
 
+## Important Note
+
+**Make sure to set your USB-to-Serial device's LATENCY TIMER to 1 ms.**  
+For proper and responsive Dynamixel communication, the latency timer (often found as a setting for FTDI or similar USB-serial chipsets) must be set to 1 ms. Failure to do so may result in significant communication delays or timeouts.
+
 ## Overview
 
 This repository provides a simple wrapper to allow control of Dynamixel motors from both MATLAB and Python environments. You can choose to use the Python implementation or interact with Dynamixel motors directly from MATLAB using a class interface.
