@@ -1,4 +1,4 @@
-# Matlab-Python Wrapper for Dynamixel
+# Matlab-Python Wrapper for Robotis Dynamixel
 
 ## Important Note
 
