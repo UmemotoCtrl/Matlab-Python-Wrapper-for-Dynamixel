@@ -8,8 +8,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Dynamixel:
-    ver = '23.10.27'
+    ver = '25.11.20'
 
+    # port_handler.LATENCY_TIMER = 16
     ## Control table address
     # 0	2	Model Number	R	1,020	-	-
     # 2	4	Model Information	R	-	-	-
@@ -300,7 +301,7 @@ class Dynamixel:
             if port.serial_number == serial_number:
                 return port.device
     @staticmethod
-    def show_list_ports():
+    def print_list_ports():
         ports = serial.tools.list_ports.comports()
         for port in ports:
             if port.vid is None:
@@ -328,13 +329,13 @@ def testPositionControl(dyn, DXL_IDs):
     dyn.writeOperatingMode(DXL_IDs, [3] * len(DXL_IDs))
     dyn.writeTorqueEnable(DXL_IDs, [1] * len(DXL_IDs))
 
-    logging.info( dyn.readPresentPosition(DXL_IDs) )
+    logging.info( "Position: %s", dyn.readPresentPosition(DXL_IDs) )
     dyn.writeGoalPosition(DXL_IDs, dyn.readMaxPositionLimit(DXL_IDs))
     time.sleep(1.0)
-    logging.info( dyn.readPresentPosition(DXL_IDs) )
+    logging.info( "Position: %s", dyn.readPresentPosition(DXL_IDs) )
     dyn.writeGoalPosition(DXL_IDs, dyn.readMinPositionLimit(DXL_IDs))
     time.sleep(1.0)
-    logging.info( dyn.readPresentPosition(DXL_IDs) )
+    logging.info( "Position: %s", dyn.readPresentPosition(DXL_IDs) )
     dyn.writeTorqueEnable(DXL_IDs, [0] * len(DXL_IDs))
 
     num = 100
@@ -344,8 +345,8 @@ def testPositionControl(dyn, DXL_IDs):
             dyn.readPresentPosition(DXL_IDs)
             dyn.readPresentVelocity(DXL_IDs)
         logging.info("elapsed_time(%s read):%s[msec]", num, time.time()*1000 - start*1000)
-        logging.info( dyn.readPresentPosition(DXL_IDs) )
-        logging.info( dyn.readPresentVelocity(DXL_IDs) )
+        logging.info( "Position: %s", dyn.readPresentPosition(DXL_IDs) )
+        logging.info( "Velocity: %s", dyn.readPresentVelocity(DXL_IDs) )
 
 def testVelocityControl(dyn, DXL_IDs):
     dyn.writeTorqueEnable(DXL_IDs, [0] * 2)
@@ -381,6 +382,7 @@ def testReadWriteCurrent(dyn, DXL_IDs):
 
 def testReadSettings(dyn, DXL_IDs):
     # To update the firmware, use the Dynamixel Wizard 2.0 software provided by ROBOTIS.
+    logging.info("- - - - - - Read Settings - - - - - -")
     logging.info("FirmwareVersion: %s", dyn.readFirmwareVersion(DXL_IDs))
     logging.info("ReturnDelayTime: %s", dyn.readReturnDelayTime(DXL_IDs))
     logging.info("DriveMode: %s", dyn.readDriveMode(DXL_IDs))
@@ -428,10 +430,10 @@ if __name__ == '__main__':
     # BAUDRATE                    = 115200
     # BAUDRATE                    = 1e6
     BAUDRATE                    = 3e6
-    Dynamixel.show_list_ports()
-    dyn = Dynamixel.open_ports_by_serial_number("FTAO9V7VA", BAUDRATE)
-    # Check the latency timer, and set to 1 msec for fast communication
-    dyn.portHandler.LATENCY_TIMER = 1
+    Dynamixel.print_list_ports()
+    ports = serial.tools.list_ports.comports()
+    dyn = Dynamixel.open_ports_by_serial_number(ports[-1].serial_number, BAUDRATE)
+
     # dyn.reboot(DXL_IDs)   # Reboot if necessary
     dyn.setRecommendedValue(DXL_IDs)
     # For safe operation, limits should be set according to the mechanical specification of the Dynamixel actuator.

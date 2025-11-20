@@ -1,2 +1,4 @@
 dynamixel_sdk/**/
 dynamixel_sdk/
+__pycache__/
+*.asv
